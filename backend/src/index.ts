@@ -1,5 +1,13 @@
 import express from "express";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
+
+mongoose
+  .connect(
+    "mongodb+srv://admin:admin@cluster0.3ljbsrd.mongodb.net/?retryWrites=true&w=majority"
+  )
+  .then(() => console.log("DB OK"))
+  .catch((err) => console.log("DB Error", err));
 
 const app = express();
 const PORT = 5000;
