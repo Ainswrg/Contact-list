@@ -4,7 +4,6 @@
   "main": "index.ts",
   "author": "Jaslan D",
   "license": "MIT",
-  "type": "module",
   "scripts": {
     "start": "node src/index.ts",
     "start:dev": "nodemon src/index.js"
