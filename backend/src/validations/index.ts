@@ -10,3 +10,9 @@ export const registerValidation = [
   }),
   body("avatarUrl", "Wrong avatar URL format").optional().isURL(),
 ];
+export const loginValidation = [
+  body("email", "Wrong email format").isEmail(),
+  body("password", "Password must be at least 5 characters").isLength({
+    min: 5,
+  }),
+];
