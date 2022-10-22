@@ -1,2 +1,3 @@
-export { Login } from "./Login";
+export { default as Login } from "./Login";
+export { default as SignUp } from "./SignUp";
 export { Home } from "./Home";

@@ -1,18 +1,37 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { Link as RouterLink } from "react-router-dom";
+import { connect } from "react-redux";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
+import Link from "@mui/material/Link";
+import { loginRequest } from "../../redux/auth/actions";
 
 type LoginValues = {
   email: string;
   password: string;
 };
 
-export const Login: React.FC = () => {
+const Login: React.FC = (props: any) => {
+  const callback = () => {
+    console.log("inside callback after login");
+  };
+
+  const onSubmit = (values: LoginValues) => {
+    console.log(values);
+    const data = {
+      values,
+      callback,
+    };
+
+    console.log(props.login(data));
+    data.callback();
+  };
+
   const {
     register,
     handleSubmit,
@@ -45,7 +64,7 @@ export const Login: React.FC = () => {
         <Typography variant="h4" sx={{ mb: 4, textAlign: "center" }}>
           Авторизация
         </Typography>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
             sx={{ mb: 2 }}
             label="Почта"
@@ -84,7 +103,24 @@ export const Login: React.FC = () => {
             Войти
           </Button>
         </form>
+        <div>asd</div>
+        <Typography
+          variant="body2"
+          display="flex "
+          justifyContent="space-between"
+        >
+          Нет Аккаунта?
+          <Link component={RouterLink} to="/signup">
+            Зарегистрироваться
+          </Link>
+        </Typography>
       </Paper>
     </Box>
   );
 };
+
+const mapDispatchToProps = (dispatch: any) => ({
+  login: () => dispatch(loginRequest()),
+});
+
+export default connect(null, mapDispatchToProps)(Login);
