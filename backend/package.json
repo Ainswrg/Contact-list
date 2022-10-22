@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node src/index.ts",
-    "start:dev": "nodemon src/index.js"
+    "start:dev": "nodemon --inspect ./dist/index.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
