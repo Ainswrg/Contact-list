@@ -1,8 +1,9 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Link as RouterLink } from "react-router-dom";
-import { connect } from "react-redux";
+import { Link as RouterLink, Navigate } from "react-router-dom";
+import { connect, useSelector } from "react-redux";
 
+import Alert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -12,6 +13,7 @@ import Paper from "@mui/material/Paper";
 import Link from "@mui/material/Link";
 
 import { signupRequest } from "../../redux/auth/actions";
+import { getDataSelector, getAuthSelector } from "../../redux/auth/selector";
 
 type SingUpValues = {
   fullName: string;
@@ -33,21 +35,19 @@ const SignUp: React.FC = (props: any) => {
     mode: "onChange",
   });
 
-  const callback = () => {
-    console.log("inside callback after login");
-  };
+  const isAuth = Boolean(useSelector(getAuthSelector));
+  const dataResponse = useSelector(getDataSelector);
 
   const onSubmit = (values: SingUpValues) => {
-    console.log(values);
+    console.log("values", values);
+    console.log("isAuth", isAuth);
 
-    const data = {
-      values,
-      callback,
-    };
-
-    console.log(props.signup(data));
-    data.callback();
+    props.signup(values);
   };
+
+  if (isAuth) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <Box
@@ -79,6 +79,10 @@ const SignUp: React.FC = (props: any) => {
             label="Имя"
             error={Boolean(errors.fullName?.message)}
             helperText={errors.fullName?.message}
+            {...register("fullName", {
+              required: "Введите имя!",
+              minLength: 5,
+            })}
             fullWidth
           />
           <TextField
@@ -119,6 +123,18 @@ const SignUp: React.FC = (props: any) => {
             Зарегистрироваться
           </Button>
         </form>
+        {dataResponse?.error && (
+          <Alert
+            severity="warning"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <strong>{dataResponse.error}</strong>
+          </Alert>
+        )}
         <Typography
           variant="body2"
           display="flex "
@@ -135,7 +151,7 @@ const SignUp: React.FC = (props: any) => {
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
-  signup: () => dispatch(signupRequest()),
+  signup: (params: any) => dispatch(signupRequest(params)),
 });
 
 export default connect(null, mapDispatchToProps)(SignUp);

@@ -1,15 +1,19 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Link as RouterLink } from "react-router-dom";
-import { connect } from "react-redux";
+import { Link as RouterLink, Navigate } from "react-router-dom";
+import { connect, useSelector } from "react-redux";
+import { Dispatch } from "redux";
 
+import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Link from "@mui/material/Link";
-import { loginRequest } from "../../redux/auth/actions";
+
+import { authRequest, loginRequest } from "../../redux/auth/actions";
+import { getAuthMeSelector, getAuthSelector, getDataSelector } from "../../redux/auth/selector";
 
 type LoginValues = {
   email: string;
@@ -17,20 +21,19 @@ type LoginValues = {
 };
 
 const Login: React.FC = (props: any) => {
-  const callback = () => {
-    console.log("inside callback after login");
-  };
+  const dataResponse = useSelector(getDataSelector);
+  const auth = useSelector(getAuthSelector);
+  const isAuth = useSelector(getAuthMeSelector);
 
   const onSubmit = (values: LoginValues) => {
-    console.log(values);
-    const data = {
-      values,
-      callback,
-    };
+    console.log("values", values);
 
-    console.log(props.login(data));
-    data.callback();
+    props.login(values);
+    // console.log("pAuth", pAuth);
+    console.log("dataResponse", dataResponse);
+    console.log("auth", auth);
   };
+
 
   const {
     register,
@@ -43,6 +46,11 @@ const Login: React.FC = (props: any) => {
     },
     mode: "onChange",
   });
+
+  if (isAuth) {
+    return <Navigate to="/" />;
+  }
+
   return (
     <Box
       height={"100vh"}
@@ -103,7 +111,18 @@ const Login: React.FC = (props: any) => {
             Войти
           </Button>
         </form>
-        <div>asd</div>
+        {/* {dataResponse?.error && (
+          <Alert
+            severity="warning"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <strong>{dataResponse.error}</strong>
+          </Alert>
+        )} */}
         <Typography
           variant="body2"
           display="flex "
@@ -119,8 +138,9 @@ const Login: React.FC = (props: any) => {
   );
 };
 
-const mapDispatchToProps = (dispatch: any) => ({
-  login: () => dispatch(loginRequest()),
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  login: (params: LoginValues) => dispatch(loginRequest(params)),
+  // authMe: () => dispatch(authRequest()),
 });
 
 export default connect(null, mapDispatchToProps)(Login);

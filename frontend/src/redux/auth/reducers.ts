@@ -29,7 +29,7 @@ const authReducer = (state = initialState, action: Action<TUser>) => {
     case AuthType.SIGNUP_FAILURE:
       return {
         ...state,
-        data: null,
+        data: action.payload,
         status: Status.ERROR,
       };
     case AuthType.SIGNUP_SUCCESS:
@@ -51,6 +51,24 @@ const authReducer = (state = initialState, action: Action<TUser>) => {
         status: Status.ERROR,
       };
     case AuthType.LOGIN_SUCCESS:
+      return {
+        ...state,
+        data: action.payload,
+        status: Status.SUCCESS,
+      };
+    case AuthType.AUTH_REQUEST:
+      return {
+        ...state,
+        data: null,
+        status: Status.LOADING,
+      };
+    case AuthType.AUTH_FAILURE:
+      return {
+        ...state,
+        data: action.payload,
+        status: Status.ERROR,
+      };
+    case AuthType.AUTH_SUCCESS:
       return {
         ...state,
         data: action.payload,
